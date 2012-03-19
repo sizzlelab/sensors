@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    <TextView android:layout_height="wrap_content" 
+    android:textAppearance="?android:attr/textAppearanceMedium" 
+    android:layout_width="wrap_content" android:id="@+id/tvIP"
+    android:layout_marginBottom="10dp"
+     android:text="Ip address"></TextView>
+    <Button android:text="Show ip" android:id="@+id/btnShowIp" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+
+<TextView  
+	android:id="@+id/tvHello" 
+	android:layout_marginTop="15dp"
+	android:layout_marginBottom="10dp"
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:text="@string/hello"
+    />
+<Button android:text="Button" android:id="@+id/btnStart" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+
+<Button android:text="Send Ip update" android:id="@+id/btnSendIp" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+<TextView android:layout_width="wrap_content" android:id="@+id/tvHeartRate" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:text="s"></TextView>
+<Button android:text="Send random" android:id="@+id/btnSendHeartRate" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+
+</LinearLayout>

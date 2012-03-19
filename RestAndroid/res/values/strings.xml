@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, RestTest1Activity!</string>
+    <string name="app_name">RestTest1</string>
+    <string name="tag">RestApp</string>
+</resources>
