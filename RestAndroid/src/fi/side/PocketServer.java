@@ -1,6 +1,6 @@
 package fi.side;
 
-
+ 
 
 import org.restlet.Request;
 import org.restlet.Server;
@@ -16,7 +16,7 @@ public class PocketServer extends ServerResource {
 		public PocketServer() throws Exception{
 			    
 		}
-		
+		 
 		
 		@Get
 		public String toString() {	
@@ -28,7 +28,7 @@ public class PocketServer extends ServerResource {
 			  ": " + parameter.getValue();
 			}
 			if (params.length()>0){
-				//Log.w(getString(R.string.tag), params);
+				//Log.w(getString(R.sWtring.tag), params);
 				params = System.getProperty("line.separator") + params;
 				System.out.print(params);
 			}*/

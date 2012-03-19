@@ -9,18 +9,19 @@ public class DBHelper {
 	public static void main(String[] args) {
 		Connection conn = null;
 	 conn = ConnectToDB(conn);
-	 if (conn != null) {
+	/* if (conn != null) {
 		 InsertValue(conn);
 		 closeDBConnection(conn);
-	 	}
+	 	}*/
 		
 	}
 	public static Connection ConnectToDB(Connection conn){
+		//TODO: move db address to resources
 		String url = "jdbc:mysql://localhost/valeriy_ubiserv_test";
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			conn = DriverManager.getConnection(url,"root","root");
-			System.out.print("OK!");
+			//System.out.print("OK!");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -39,6 +40,7 @@ public class DBHelper {
 			}
 	}
 	
+	/*
 	private static void InsertValue(Connection conn) {
 		try {
 			PreparedStatement s = conn.prepareStatement(
@@ -54,9 +56,7 @@ public class DBHelper {
 			e.printStackTrace();
 			
 		}
-		
-	 
-		
-	
+
 	}
+	*/
 }

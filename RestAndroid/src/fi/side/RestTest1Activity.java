@@ -10,6 +10,7 @@ import org.restlet.data.Form;
 import org.restlet.data.Protocol;
 import org.restlet.resource.ClientResource;
 
+import fi.soberit.ubiserv.Data.DataRecord;
 import fi.soberit.ubiserv.Data.IDataAdd;
 
  
@@ -31,7 +32,7 @@ import android.widget.TextView;
 public class RestTest1Activity extends Activity {
     /** Called when the activity is first created. */
    final String tag = "RestApp";
-   final String ipAddress = "82.130.13.61";
+   final String ipAddress = "86.50.143.58";
    
    private BroadcastReceiver mConnReceiver = new BroadcastReceiver() {
 	   
@@ -87,20 +88,23 @@ public class RestTest1Activity extends Activity {
 	private View.OnClickListener onBtnSendHeartRate = new View.OnClickListener() {
 		
 		public void onClick(View v) {
-			try {
-				
-			
+			DataRecord data = new DataRecord();
+			data.setData("sent from phone");
+			SendData(data);
+	};
+	};
+	
+	private void SendData(DataRecord data){
+		try {
 			IDataAdd DataAddServerRes = ClientResource.create(
 					"http://"+ ipAddress +":8321/data/add/", IDataAdd.class);
-					String result = DataAddServerRes.DataAdd("sd 12321 dsfs");
-				//	System.out.println(result);
-					
+					String result = DataAddServerRes.DataAdd(data);
+					System.out.println(result);
 		} catch (Exception e) {
 			Log.w(tag, e.toString());
 		}
 		
-	};
-	};
+	}
 	
 	private View.OnClickListener onBtnSendIp = new View.OnClickListener() {
 		

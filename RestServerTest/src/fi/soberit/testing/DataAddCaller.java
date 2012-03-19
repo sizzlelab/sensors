@@ -8,7 +8,7 @@ public class DataAddCaller {
 	public static void main(String[] args) throws Exception {
 		IDataAdd mailRoot = ClientResource.create(
 		"http://localhost:8321/data/add/", IDataAdd.class);
-		String result = mailRoot.DataAdd("sd");
-		System.out.println(result);
+		//String result = mailRoot.DataAdd("sd");
+		//System.out.println(result);
 		}
 }
