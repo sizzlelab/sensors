@@ -18,23 +18,24 @@ public class DataAddServerResource extends ServerResource implements IDataAdd {
 	
 	@Get
 	public String AddData(){
-		
-		
 		return "OK";
 	}
 
-	
+	/**
+	 * Handling data sent from a phone
+	 */
 	@Override
 	public String DataAdd(DataRecord data) {
 		System.out.println(data.getData());
 		
-		java.util.Date now = new java.util.Date();  
-		Timestamp tStamp =  new java.sql.Timestamp( now.getTime() ) ;  
+		//java.util.Date now = new java.util.Date();  
+		//Timestamp tStamp =  new java.sql.Timestamp( now.getTime() ) ;  
 		
 		Connection conn = null;
 		conn = DBHelper.ConnectToDB(conn);
 		 if (conn != null) {
-			 InsertValue(conn,"adadad","data",tStamp);
+			 //InsertValue(conn,"adadad","data",tStamp);
+			 InsertValue(conn,data);
 			 DBHelper.closeDBConnection(conn);
 		 	}
 		
@@ -42,21 +43,26 @@ public class DataAddServerResource extends ServerResource implements IDataAdd {
 		return "test test";
 	}
 	
-	private void InsertValue(Connection conn,String imei,String data,Timestamp date) {
+	/**
+	 * Saving data to DB
+	 * @param conn DB connection
+	 * @param dataRecord Class for data to be saved
+	 */
+	private void InsertValue(Connection conn, DataRecord dataRecord){ //(Connection conn,String imei,String data,Timestamp date) {
 		try {
 			PreparedStatement s = conn.prepareStatement(
 					"INSERT INTO `valeriy_ubiserv_test`.`" +
 					"sensorsdata` (`idPhone`, `Data`, `Date`) VALUES (?, ?, ?);"
 
 					);
-			s.setString(1, imei);
-			s.setString(2, data);
-			s.setTimestamp( 3, date );   
+			s.setString(1, dataRecord.getPhoneId());
+			s.setString(2, dataRecord.getData());
+			s.setTimestamp( 3, dataRecord.getDate());   
 			s.executeUpdate();
 			s.close();
 			System.out.print("Inserted");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			// TODO: Write to a logger
 			e.printStackTrace();
 			
 		}
