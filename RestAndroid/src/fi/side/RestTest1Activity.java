@@ -11,6 +11,8 @@ import org.restlet.data.Form;
 import org.restlet.data.Protocol;
 import org.restlet.resource.ClientResource;
 
+import fi.side.sensors.Sensor;
+import fi.side.sensors.SensorListener;
 import fi.soberit.ubiserv.Data.DataRecord;
 import fi.soberit.ubiserv.Data.IDataAdd;
 
@@ -33,7 +35,8 @@ import android.widget.TextView;
 public class RestTest1Activity extends Activity {
     /** Called when the activity is first created. */
    final String tag = "RestApp";
-   final String ipAddress = "86.50.138.233";
+   final String ipAddress = "86.50.140.245";
+   Sensor sensor;
    
    private BroadcastReceiver mConnReceiver = new BroadcastReceiver() {
 	   
@@ -75,6 +78,9 @@ public class RestTest1Activity extends Activity {
     	btnSendHeartRate.setOnClickListener(onBtnSendHeartRate);
     	
     	registerReceivers();
+    	
+    	sensor = new Sensor();
+    	sensor.addListener(sensorListener);
         
     } 
     
@@ -90,16 +96,22 @@ public class RestTest1Activity extends Activity {
 	private View.OnClickListener onBtnSendHeartRate = new View.OnClickListener() {
 		
 		public void onClick(View v) {
-			DataRecord data = new DataRecord();
-			data.setData("sent from phone");
-			data.setPhoneId(getPhoneUID());
 			
-			java.util.Date now = new java.util.Date();  
-			Timestamp tStamp =  new java.sql.Timestamp( now.getTime()) ; 
-			data.setDate(tStamp);
-			SendData(data);
+			sensor.updateSensor("new sensor data");
+			//SendData(formData(""));
 	};
 	};
+	
+	private DataRecord formData(String data){
+		DataRecord dataRecord = new DataRecord();
+		dataRecord.setData("sent from phone " + data);
+		dataRecord.setPhoneId(getPhoneUID());
+		
+		java.util.Date now = new java.util.Date();  
+		Timestamp tStamp =  new java.sql.Timestamp( now.getTime()) ; 
+		dataRecord.setDate(tStamp);
+		return dataRecord;
+	}
 	
 	/**
 	 * Sending gathered data to the server
@@ -190,5 +202,10 @@ public class RestTest1Activity extends Activity {
 	   }
 	 
 	   
+	   private SensorListener sensorListener = new SensorListener(){
+		   public void HandleSensorData(String data) {
+				SendData(formData(data));
+		   };
+	   };
     
 }
