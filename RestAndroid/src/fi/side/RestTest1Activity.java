@@ -35,7 +35,7 @@ import android.widget.TextView;
 public class RestTest1Activity extends Activity {
     /** Called when the activity is first created. */
    final String tag = "RestApp";
-   final String ipAddress = "86.50.140.245";
+   String ipAddress = "";
    Sensor sensor;
    
    private BroadcastReceiver mConnReceiver = new BroadcastReceiver() {
@@ -81,6 +81,8 @@ public class RestTest1Activity extends Activity {
     	
     	sensor = new Sensor();
     	sensor.addListener(sensorListener);
+    	
+    	ipAddress = getString(R.string.server_address);
         
     } 
     
