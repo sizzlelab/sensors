@@ -10,3 +10,8 @@ public class MessagesServerResource extends ServerResource{
 			return "messages list";
 		}
 }
+
+
+
+
+//SELECT * FROM valeriy_ubiserv_test.sensorsdata ORDER BY DATE LIMIT 0, 100 

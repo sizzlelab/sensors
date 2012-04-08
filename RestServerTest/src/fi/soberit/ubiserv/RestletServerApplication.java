@@ -23,6 +23,7 @@ public class RestletServerApplication extends Application{
 	public Restlet createInboundRoot() { 
 		Router router = new Router (getContext());
 		router.attach("/",MessageServiceResource.class);
+		//100 latest messages
 		router.attach("/messages/",MessagesServerResource.class);
 		router.attach("/ip/",IpUpdateServerResource.class);
 		router.attach("/data/add/",DataAddServerResource.class);

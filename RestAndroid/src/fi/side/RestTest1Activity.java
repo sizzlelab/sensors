@@ -11,6 +11,7 @@ import org.restlet.data.Form;
 import org.restlet.data.Protocol;
 import org.restlet.resource.ClientResource;
 
+import fi.side.restlet.AndroidRestlet;
 import fi.side.sensors.Sensor;
 import fi.side.sensors.SensorListener;
 import fi.soberit.ubiserv.Data.DataRecord;
@@ -34,31 +35,9 @@ import android.widget.TextView;
 
 public class RestTest1Activity extends Activity {
     /** Called when the activity is first created. */
-   final String tag = "RestApp";
-   String ipAddress = "";
-   Sensor sensor;
-   
-   private BroadcastReceiver mConnReceiver = new BroadcastReceiver() {
-	   
-	   /**
-	    * Runs when phone's IP address has been changed
-	    */
-	   public void onReceive(Context context, Intent intent) {
-		  //no network available
-		   boolean connectivity = !intent.getBooleanExtra(ConnectivityManager. EXTRA_NO_CONNECTIVITY, false);
-		   String reason = intent.getStringExtra(ConnectivityManager.EXTRA_REASON);
-	       boolean isFailover = intent.getBooleanExtra(ConnectivityManager.EXTRA_IS_FAILOVER, false);
-	       NetworkInfo currentNetworkInfo = (NetworkInfo) intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
-	       NetworkInfo otherNetworkInfo = (NetworkInfo) intent.getParcelableExtra(ConnectivityManager.EXTRA_OTHER_NETWORK_INFO);
-	       if (connectivity) 
-	    	   try {
-	    		   sendIp(getLocalIpAddress());
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-	    	 
-	   }  
-	   };
+
+	   final String tag = "RestApp";
+  
    
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,10 +58,15 @@ public class RestTest1Activity extends Activity {
     	
     	registerReceivers();
     	
-    	sensor = new Sensor();
-    	sensor.addListener(sensorListener);
+    	AndroidRestlet.init();
+    	AndroidRestlet.setPhoneUID(getPhoneUID());
+    	AndroidRestlet.ipAddress = getString(R.string.server_address);
     	
-    	ipAddress = getString(R.string.server_address);
+    	//TODO: move it to the class
+    	AndroidRestlet.sensor = new Sensor();
+    	//AndroidRestlet.sensor.addListener(sensorListener);
+    	
+ 
         
     } 
     
@@ -90,7 +74,7 @@ public class RestTest1Activity extends Activity {
 		
 		public void onClick(View arg0) {
 			TextView tvIP = (TextView)findViewById(R.id.tvIP);
-			tvIP.setText(getLocalIpAddress());				
+			tvIP.setText(AndroidRestlet.getLocalIpAddress());				
 		}
 	};
 	
@@ -98,50 +82,22 @@ public class RestTest1Activity extends Activity {
 	private View.OnClickListener onBtnSendHeartRate = new View.OnClickListener() {
 		
 		public void onClick(View v) {
-			
-			sensor.updateSensor("new sensor data");
-			//SendData(formData(""));
+			AndroidRestlet.sensor.updateSensor("new sensor data");
 	};
 	};
 	
-	private DataRecord formData(String data){
-		DataRecord dataRecord = new DataRecord();
-		dataRecord.setData("sent from phone " + data);
-		dataRecord.setPhoneId(getPhoneUID());
-		
-		java.util.Date now = new java.util.Date();  
-		Timestamp tStamp =  new java.sql.Timestamp( now.getTime()) ; 
-		dataRecord.setDate(tStamp);
-		return dataRecord;
-	}
+
+
 	
-	/**
-	 * Sending gathered data to the server
-	 * @param data 
-	 */
-	private void SendData(DataRecord data){
-		try {
-			IDataAdd DataAddServerRes = ClientResource.create(
-					"http://"+ ipAddress +":8321/data/add/", IDataAdd.class);
-					String result = DataAddServerRes.DataAdd(data);
-					System.out.println(result);
-		} catch (Exception e) {
-			Log.w(tag, e.toString());
-			//TODO: save error to the logger storage
-		}
-		
-	}
-	
-	//Test method for getting phone's IP not used in production
+	//Test event for getting phone's IP not used in production
 	private View.OnClickListener onBtnSendIp = new View.OnClickListener() {
-		
 		public void onClick(View arg0) {
-			sendIp(getLocalIpAddress());
- 
+			AndroidRestlet.sendIp();
 		}
 	};
 	
 	// Used for phone's internal REST server
+	// For test only
     private View.OnClickListener onStart = new View.OnClickListener() {
 		
 		public void onClick(View v) {
@@ -158,35 +114,9 @@ public class RestTest1Activity extends Activity {
 		}
 	};
     
-	public String getLocalIpAddress() {
-	        try {
-	            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
-	                NetworkInterface intf = en.nextElement();
-	                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
-	                    InetAddress inetAddress = enumIpAddr.nextElement();
-	                    if (!inetAddress.isLoopbackAddress()) {
-	                        return inetAddress.getHostAddress().toString();
-	                    }
-	                }
-	            }
-	        } catch (SocketException ex) {
-	            Log.e("MenuApp", ex.toString());
-	        }
-	        return null;
-	    }
+
 	  
-	/**
-	 * Send updated(new) phone's IP to the server so it'll know it.
-	 * @param ip
-	 */
-	  private void sendIp(String ip) {
-		   ClientResource client =
-					new ClientResource("http://" + ipAddress + ":8321/ip/");
-					Form form = new Form();
-					form.add("ip",ip);
-					form.add("imei",getPhoneUID()); 
-					client.post(form);		 
-	   }
+
 	   
 	  /**
 	   * Getting phone's imei. Used as a unique identifier for a phone
@@ -204,10 +134,29 @@ public class RestTest1Activity extends Activity {
 	   }
 	 
 	   
-	   private SensorListener sensorListener = new SensorListener(){
-		   public void HandleSensorData(String data) {
-				SendData(formData(data));
-		   };
-	   };
+	
     
+	   
+	   private BroadcastReceiver mConnReceiver = new BroadcastReceiver() {
+		   
+		   /**
+		    * Runs when phone's IP address has been changed
+		    */
+		   public void onReceive(Context context, Intent intent) {
+			  //no network available
+			   boolean connectivity = !intent.getBooleanExtra(ConnectivityManager. EXTRA_NO_CONNECTIVITY, false);
+			   String reason = intent.getStringExtra(ConnectivityManager.EXTRA_REASON);
+		       boolean isFailover = intent.getBooleanExtra(ConnectivityManager.EXTRA_IS_FAILOVER, false);
+		       NetworkInfo currentNetworkInfo = (NetworkInfo) intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
+		       NetworkInfo otherNetworkInfo = (NetworkInfo) intent.getParcelableExtra(ConnectivityManager.EXTRA_OTHER_NETWORK_INFO);
+		       if (connectivity) 
+		    	   try {
+		    		   AndroidRestlet.sendIp();
+				} catch (Exception e) {
+					Log.w(tag, e.toString());
+				}
+		    	 
+		   }  
+		   };
+	   
 }

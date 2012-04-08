@@ -2,13 +2,35 @@ package fi.soberit.ubiserv.Data;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Date;
 
-import javax.print.attribute.standard.DateTimeAtCompleted;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+@Entity (name="sensorsdata")
+@NamedQueries({
+	@NamedQuery(
+	name = "findLastRecords",
+	query = "from sensorsdata dr ORDER BY dr.date"
+	)
+})
 public class DataRecord implements Serializable {
+	@Id
+	@Column(name="idSensorsData")
+	private int idSensorsData; 
+	
+	@Expose
+	@Column(name="idPhone")
 	private String phoneId;
+	
+	@Expose
 	private String data;
+	@Expose
 	private Timestamp date;
 	
 	public String getPhoneId() {
