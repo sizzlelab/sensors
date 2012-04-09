@@ -17,7 +17,11 @@ import com.google.gson.annotations.SerializedName;
 	@NamedQuery(
 	name = "findLastRecords",
 	query = "from sensorsdata dr ORDER BY dr.date"
-	)
+	),
+	@NamedQuery(
+	name = "findByPhoneId",
+	query = "FROM sensorsdata dr WHERE dr.phoneId= :phoneId"
+			)
 })
 public class DataRecord implements Serializable {
 	@Id

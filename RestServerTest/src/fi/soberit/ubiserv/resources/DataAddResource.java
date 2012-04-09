@@ -15,8 +15,8 @@ import fi.soberit.ubiserv.Data.DataRecord;
 import fi.soberit.ubiserv.Data.IDataAdd;
 import fi.soberit.ubiserv.utilities.DBHelper;
 
-public class DataAddServerResource extends ServerResource implements IDataAdd {
-	public DataAddServerResource() {}
+public class DataAddResource extends ServerResource implements IDataAdd {
+	public DataAddResource() {}
 	
 	@Get
 	public String AddData(){

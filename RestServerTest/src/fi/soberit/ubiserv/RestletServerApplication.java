@@ -9,27 +9,27 @@ import org.restlet.data.MediaType;
 import org.restlet.data.Protocol;
 import org.restlet.routing.Router;
 
-import fi.soberit.ubiserv.resources.DataAddServerResource;
-import fi.soberit.ubiserv.resources.IpUpdateServerResource;
-import fi.soberit.ubiserv.resources.MessageServiceResource;
-import fi.soberit.ubiserv.resources.MessagesServerResource;
+import fi.soberit.ubiserv.resources.DataAddResource;
+import fi.soberit.ubiserv.resources.IpUpdateResource;
+import fi.soberit.ubiserv.resources.MessageResource;
+import fi.soberit.ubiserv.resources.MessagesByPhoneIdResource;
+import fi.soberit.ubiserv.resources.MessagesResource;
 
 public class RestletServerApplication extends Application{
 
 	public static void main(String[] args) throws Exception { 
-		//Server mailServer = new Server(Protocol.HTTP, 8311);
-		//mailServer.setNext(new AppTest());
-		//mailServer.start();
+ 
 		}
 	 
 	@Override
 	public Restlet createInboundRoot() { 
 		Router router = new Router (getContext());
-		router.attach("/",MessageServiceResource.class);
+		router.attach("/",MessageResource.class);
 		//100 latest messages
-		router.attach("/messages/",MessagesServerResource.class);
-		router.attach("/ip/",IpUpdateServerResource.class);
-		router.attach("/data/add/",DataAddServerResource.class);
+		router.attach("/messages/",MessagesResource.class);
+		router.attach("/messages/{phoneId}",MessagesByPhoneIdResource.class);
+		router.attach("/ip/",IpUpdateResource.class);
+		router.attach("/data/add/",DataAddResource.class);
 		return router;
 	}
 	

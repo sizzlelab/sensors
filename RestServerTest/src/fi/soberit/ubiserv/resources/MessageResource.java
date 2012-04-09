@@ -5,8 +5,8 @@ import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
-public class MessageServiceResource extends ServerResource {
-	public MessageServiceResource( ) {
+public class MessageResource extends ServerResource {
+	public MessageResource( ) {
 		 
  }
 	
@@ -19,3 +19,4 @@ public class MessageServiceResource extends ServerResource {
 	}
 	
 }
+//((String) getRequestAttributes().get("accountId"));

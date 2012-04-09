@@ -17,8 +17,8 @@ import fi.soberit.ubiserv.utilities.DBHelper;
  * @author Valeriy Volodenkov
  *
  */
-public class IpUpdateServerResource extends ServerResource{
-	public IpUpdateServerResource() {
+public class IpUpdateResource extends ServerResource{
+	public IpUpdateResource() {
 		
 	}
 	
