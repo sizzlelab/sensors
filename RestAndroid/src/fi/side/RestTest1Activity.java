@@ -63,7 +63,7 @@ public class RestTest1Activity extends Activity {
     	AndroidRestlet.ipAddress = getString(R.string.server_address);
     	
     	//TODO: move it to the class
-    	AndroidRestlet.sensor = new Sensor();
+    	//AndroidRestlet.sensor = new Sensor();
     	//AndroidRestlet.sensor.addListener(sensorListener);
     	
  

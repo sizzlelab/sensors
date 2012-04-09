@@ -18,8 +18,10 @@ public class Sensor {
 		update(data);
 	}
 	
+	//if there is at least one sensor listener registered
 	private void update(String data){
-		listeners.get(0).HandleSensorData(data);
+		if (listeners.size()>0)
+			listeners.get(0).HandleSensorData(data);
 	}
 	
 }
