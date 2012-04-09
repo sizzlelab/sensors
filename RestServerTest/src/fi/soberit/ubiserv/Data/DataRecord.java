@@ -21,7 +21,15 @@ import com.google.gson.annotations.SerializedName;
 	@NamedQuery(
 	name = "findByPhoneId",
 	query = "FROM sensorsdata dr WHERE dr.phoneId= :phoneId"
-			)
+			),
+	@NamedQuery(
+	name = "findByDate",
+	query = "FROM sensorsdata dr WHERE dr.date > :dateFrom AND dr.date < :dateTo "
+			),	
+	@NamedQuery(
+	name = "findByPhoneIdAndDate",
+	query = "FROM sensorsdata dr WHERE dr.phoneId= :phoneId AND dr.date > :dateFrom AND dr.date < :dateTo "
+			)		
 })
 public class DataRecord implements Serializable {
 	@Id

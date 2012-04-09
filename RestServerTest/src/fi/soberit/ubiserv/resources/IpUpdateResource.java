@@ -30,22 +30,7 @@ public class IpUpdateResource extends ServerResource{
 	//TODO: return server states
 	@Post
 	public String postUpdateIp(Representation data){
-		
 		Form form = new Form(data);
-		
-		
-		/*Form form = request.getResourceRef().getQueryAsForm();
-		String params = "";
-		for (Parameter parameter : form) {
-		  params += " parameter " + parameter.getName() +
-		  ": " + parameter.getValue();
-		}
-		if (params.length()>0){
-			//Log.w(getString(R.string.tag), params);
-			params = System.getProperty("line.separator") + params;
-			System.out.print(params);
-		}*/
-		
 		String ip = form.getFirstValue("ip");
 		String imei = form.getFirstValue("imei");
 		System.out.print("!!!INSERTED!!!!!!!!!!"+ ip);
@@ -72,7 +57,7 @@ public class IpUpdateResource extends ServerResource{
 			s.close();
 			System.out.print("Inserted");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+		 
 			e.printStackTrace();
 			
 		}

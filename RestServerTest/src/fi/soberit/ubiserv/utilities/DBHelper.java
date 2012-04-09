@@ -9,10 +9,7 @@ public class DBHelper {
 	public static void main(String[] args) {
 		Connection conn = null;
 	 conn = ConnectToDB(conn);
-	/* if (conn != null) {
-		 InsertValue(conn);
-		 closeDBConnection(conn);
-	 	}*/
+ 
 		
 	}
 	public static Connection ConnectToDB(Connection conn){
@@ -21,7 +18,7 @@ public class DBHelper {
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			conn = DriverManager.getConnection(url,"root","root");
-			//System.out.print("OK!");
+	 
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -40,23 +37,5 @@ public class DBHelper {
 			}
 	}
 	
-	/*
-	private static void InsertValue(Connection conn) {
-		try {
-			PreparedStatement s = conn.prepareStatement(
-					"INSERT INTO ip_addresses (address,imei) VALUES(?,?)"
-					);
-			s.setString(1, "1.1.1.1");
-			s.setString(2, "21345673");
-			s.executeUpdate();
-			s.close();
-			System.out.print("Inserted");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			
-		}
-
-	}
-	*/
+ 
 }

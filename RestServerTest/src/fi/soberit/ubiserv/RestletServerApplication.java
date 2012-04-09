@@ -11,7 +11,8 @@ import org.restlet.routing.Router;
 
 import fi.soberit.ubiserv.resources.DataAddResource;
 import fi.soberit.ubiserv.resources.IpUpdateResource;
-import fi.soberit.ubiserv.resources.MessageResource;
+import fi.soberit.ubiserv.resources.MessagesByDateResource;
+import fi.soberit.ubiserv.resources.MessagesByPhoneIdAndDateResource;
 import fi.soberit.ubiserv.resources.MessagesByPhoneIdResource;
 import fi.soberit.ubiserv.resources.MessagesResource;
 
@@ -24,10 +25,11 @@ public class RestletServerApplication extends Application{
 	@Override
 	public Restlet createInboundRoot() { 
 		Router router = new Router (getContext());
-		router.attach("/",MessageResource.class);
 		//100 latest messages
 		router.attach("/messages/",MessagesResource.class);
-		router.attach("/messages/{phoneId}",MessagesByPhoneIdResource.class);
+		router.attach("/messages/{year}/{month}/{day}",MessagesByDateResource.class);
+		router.attach("/messages/imei/{phoneId}",MessagesByPhoneIdResource.class);
+		router.attach("/messages/imei/{phoneId}/{year}/{month}/{day}",MessagesByPhoneIdAndDateResource.class);
 		router.attach("/ip/",IpUpdateResource.class);
 		router.attach("/data/add/",DataAddResource.class);
 		return router;
