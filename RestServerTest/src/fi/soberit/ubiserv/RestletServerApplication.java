@@ -9,7 +9,10 @@ import org.restlet.data.MediaType;
 import org.restlet.data.Protocol;
 import org.restlet.routing.Router;
 
-import fi.soberit.ubiserv.Data.DataAddServerResource;
+import fi.soberit.ubiserv.resources.DataAddServerResource;
+import fi.soberit.ubiserv.resources.IpUpdateServerResource;
+import fi.soberit.ubiserv.resources.MessageServiceResource;
+import fi.soberit.ubiserv.resources.MessagesServerResource;
 
 public class RestletServerApplication extends Application{
 
