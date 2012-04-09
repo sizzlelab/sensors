@@ -8,6 +8,10 @@ import java.sql.Timestamp;
 import java.util.Calendar;
  
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+import org.restlet.data.Status;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 
@@ -28,21 +32,34 @@ public class DataAddResource extends ServerResource implements IDataAdd {
 	 */
 	@Override
 	public String DataAdd(DataRecord data) {
+		SessionFactory sessionFactory = new Configuration().
+				configure().buildSessionFactory();
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+ 
+		session.persist(data);
+		session.getTransaction().commit();
+		session.close();	
+		
+		setStatus(Status.SUCCESS_OK);
+		return null;
+		
+		/*
 		System.out.println(data.getData());
 		
-		//java.util.Date now = new java.util.Date();  
-		//Timestamp tStamp =  new java.sql.Timestamp( now.getTime() ) ;  
+ 
 		
 		Connection conn = null;
 		conn = DBHelper.ConnectToDB(conn);
 		 if (conn != null) {
-			 //InsertValue(conn,"adadad","data",tStamp);
+		 
 			 InsertValue(conn,data);
 			 DBHelper.closeDBConnection(conn);
 		 	}
 		
 		
 		return "test test";
+		*/
 	}
 	
 	/**

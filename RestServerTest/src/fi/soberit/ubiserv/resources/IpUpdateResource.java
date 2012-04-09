@@ -3,14 +3,21 @@ package fi.soberit.ubiserv.resources;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 import org.restlet.Request;
 import org.restlet.data.Form;
+import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 
+import fi.soberit.ubiserv.Data.IpAdressRecord;
 import fi.soberit.ubiserv.utilities.DBHelper;
 /**
  * Handles phones' IP updates
@@ -27,40 +34,23 @@ public class IpUpdateResource extends ServerResource{
 		return "returning get for ip";
 	}
 
-	//TODO: return server states
+ 
+	
 	@Post
-	public String postUpdateIp(Representation data){
-		Form form = new Form(data);
-		String ip = form.getFirstValue("ip");
-		String imei = form.getFirstValue("imei");
-		System.out.print("!!!INSERTED!!!!!!!!!!"+ ip);
+	public String postUpdateIp(IpAdressRecord ipRecord){
 		
-		Connection conn = null;
-		conn = DBHelper.ConnectToDB(conn);
-		 if (conn != null) {
-			 InsertValue(conn,ip,imei);
-			 DBHelper.closeDBConnection(conn);
-		 	}
+		SessionFactory sessionFactory = new Configuration().
+				configure().buildSessionFactory();
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		session.save(ipRecord);
+		session.getTransaction().commit();
+		session.close();	
 		
-		return "ok";
+		setStatus(Status.SUCCESS_OK);
+		return null;
 	}
 	
-	
-	private void InsertValue(Connection conn,String ip,String imei) {
-		try {
-			PreparedStatement s = conn.prepareStatement(
-					"INSERT INTO ip_addresses (address,imei) VALUES(?,?)"
-					);
-			s.setString(1, ip);
-			s.setString(2, imei);
-			s.executeUpdate();
-			s.close();
-			System.out.print("Inserted");
-		} catch (SQLException e) {
-		 
-			e.printStackTrace();
-			
-		}
-	}
+ 
 	
 }

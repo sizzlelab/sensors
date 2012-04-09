@@ -20,6 +20,7 @@ import fi.side.sensors.Sensor;
 import fi.side.sensors.SensorListener;
 import fi.soberit.ubiserv.Data.DataRecord;
 import fi.soberit.ubiserv.Data.IDataAdd;
+import fi.soberit.ubiserv.Data.IpAdressRecord;
 
 public class AndroidRestlet {
 
@@ -82,7 +83,12 @@ public class AndroidRestlet {
 							Form form = new Form();
 							form.add("ip",ip);
 							form.add("imei",phoneUID); 
-							client.post(form);		 
+							
+							IpAdressRecord ipRecord = new IpAdressRecord();
+							ipRecord.setAddress(ip);
+							ipRecord.setImei(phoneUID);
+							
+							client.post(ipRecord);		 
 			   }
 	   
 	
@@ -112,8 +118,9 @@ public class AndroidRestlet {
 					try {
 						IDataAdd DataAddServerRes = ClientResource.create(
 								"http://"+ AndroidRestlet.ipAddress +":8321/data/add/", IDataAdd.class);
-								String result = DataAddServerRes.DataAdd(data);
-								System.out.println(result);
+								//String result =
+								DataAddServerRes.DataAdd(data);
+								//System.out.println(result);
 					} catch (Exception e) {
 						Log.w(tag, e.toString());
 						//TODO: save error to the logger storage

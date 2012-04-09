@@ -34,7 +34,7 @@ import com.google.gson.annotations.SerializedName;
 public class DataRecord implements Serializable {
 	@Id
 	@Column(name="idSensorsData")
-	private int idSensorsData; 
+	private long idSensorsData; 
 	
 	@Expose
 	@Column(name="idPhone")

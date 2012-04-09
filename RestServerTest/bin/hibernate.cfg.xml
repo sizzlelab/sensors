@@ -30,7 +30,7 @@
  
         <!-- Names the annotated entity class -->
         <mapping class="fi.soberit.ubiserv.Data.DataRecord"/>
-
+ 		<mapping class="fi.soberit.ubiserv.Data.IpAdressRecord"/>
     </session-factory>
 
 </hibernate-configuration>
