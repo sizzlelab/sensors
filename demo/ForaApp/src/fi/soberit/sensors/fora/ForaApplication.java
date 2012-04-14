@@ -18,7 +18,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import fi.soberit.fora.D40CachedSink;
 import fi.soberit.fora.IR21Sink;
-import fi.soberit.sensors.fora.R;
+import fi.soberit.sensors.fora.R;	
 import fi.soberit.sensors.util.IntentFactory;
 
 public class ForaApplication extends Application {

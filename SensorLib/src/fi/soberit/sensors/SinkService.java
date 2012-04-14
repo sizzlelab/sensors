@@ -195,6 +195,8 @@ public abstract class SinkService extends Service {
 	}
 	
 	protected void onUnregisterClient(String clientId, long msgId) {
+	
+		
 	}
 	
 	protected void onReceivedMessage(Message msg, String clientId, long msgId) {
@@ -298,8 +300,10 @@ public abstract class SinkService extends Service {
 		}
 		
 		@Override
-		public void run() {
+		public void run() {			
 			if (sink.getClients().size() > 0) {
+				Log.d(TAG, "Och, more clients came!");
+
 				return;
 			}
 			

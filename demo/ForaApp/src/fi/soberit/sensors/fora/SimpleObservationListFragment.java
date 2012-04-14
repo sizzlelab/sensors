@@ -1,15 +1,10 @@
 package fi.soberit.sensors.fora;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.TreeSet;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.Parcelable;
@@ -20,7 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -37,24 +31,10 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import fi.soberit.sensors.DriverConnection;
 import fi.soberit.sensors.SensorDriverConnection;
 import fi.soberit.sensors.DriverStatusListener;
-import fi.soberit.sensors.Observation;
 import fi.soberit.sensors.R;
 import fi.soberit.sensors.SensorSinkService;
 import fi.soberit.sensors.SinkSensorConnection;
-import fi.soberit.sensors.db.MGDatabaseHelper;
-import fi.soberit.sensors.fora.db.Ambient;
-import fi.soberit.sensors.fora.db.AmbientDao;
-import fi.soberit.sensors.fora.db.BloodPressure;
-import fi.soberit.sensors.fora.db.BloodPressureDao;
-import fi.soberit.sensors.fora.db.DatabaseHelper;
-import fi.soberit.sensors.fora.db.Glucose;
-import fi.soberit.sensors.fora.db.GlucoseDao;
-import fi.soberit.sensors.fora.db.Pulse;
-import fi.soberit.sensors.fora.db.PulseDao;
 import fi.soberit.sensors.fora.db.Record;
-import fi.soberit.sensors.fora.db.Temperature;
-import fi.soberit.sensors.fora.db.TemperatureDao;
-import fi.soberit.sensors.util.LittleEndian;
 
 public class SimpleObservationListFragment extends SherlockFragment implements
 		LoaderManager.LoaderCallbacks<Collection<Record>>, 
@@ -410,207 +390,5 @@ public class SimpleObservationListFragment extends SherlockFragment implements
 
 	public void onObservationsSaved() {
 		getLoaderManager().restartLoader(OBSERVATIONS_LOADER_ID, getArguments(), this);
-	}
-}
-
-class ObservationsLoader extends AsyncTaskLoader<Collection<Record>> {
-
-	public static final String TAG = ObservationsLoader.class.getSimpleName();
-	
-	private BloodPressureDao pressureDao;
-	private PulseDao pulseDao;
-	private GlucoseDao glucoseDao;
-	private TemperatureDao temperatureDao;
-	private AmbientDao ambientDao;
-
-	private long[] types;
-
-	private DatabaseHelper dbHelper;
-
-	public ObservationsLoader(Context context, long[] types) {
-		super(context);
-
-		Log.d(TAG, "ObservationsLoader()");
-		
-		this.types = types;
-
-		dbHelper = new DatabaseHelper(context);
-
-		pressureDao = new BloodPressureDao(dbHelper);
-		pulseDao = new PulseDao(dbHelper);
-		glucoseDao = new GlucoseDao(dbHelper);
-		temperatureDao = new TemperatureDao(dbHelper);
-		ambientDao = new AmbientDao(dbHelper);	
-	}
-
-	@Override
-	public Collection<Record> loadInBackground() {
-		Log.d(TAG, "loadInBackground");	
-
-		TreeSet<Record> result = new TreeSet<Record>();
-
-		for (long type : types) {
-			
-			if (type == Observation.TYPE_INDEX_BLOOD_PRESSURE) {
-				result.addAll(pressureDao.getMeasurements());
- 
-			} else if (type == Observation.TYPE_INDEX_GLUCOSE) {
-				result.addAll(glucoseDao.getMeasurements());
-
-			} else if (type == Observation.TYPE_INDEX_PULSE) {
-				result.addAll(pulseDao.getMeasurements());
-
-			} else if (type == Observation.TYPE_INDEX_AMBIENT_TEMPERATURE) {
-
-				result.addAll(ambientDao.getMeasurements());
-			} else if (type == Observation.TYPE_INDEX_TEMPERATURE) {
-
-				
-				result.addAll(temperatureDao.getMeasurements());
-			}
-		}
-
-		return result;
-	}
-
-	@Override
-	protected void onStartLoading() {
-		forceLoad();
-	}
-	
-	@Override
-	protected void onReset() {
-		Log.d(TAG, "onReset()");
-		
-		dbHelper.closeDatabases();
-	}
-}
-
-class SaveObservationsTask extends AsyncTask<List<Parcelable>, Void, Void> {
-	private BloodPressureDao pressureDao;
-	private PulseDao pulseDao;
-	private GlucoseDao glucoseDao;
-	private TemperatureDao temperatureDao;
-	private AmbientDao ambientDao;
-
-	private SimpleObservationListFragment fragment;
-
-	public SaveObservationsTask(SimpleObservationListFragment fragment) {
-
-		MGDatabaseHelper dbHelper = new DatabaseHelper(fragment.getActivity());
-		
-		pressureDao = new BloodPressureDao(dbHelper);
-		pulseDao = new PulseDao(dbHelper);
-		glucoseDao = new GlucoseDao(dbHelper);
-		temperatureDao = new TemperatureDao(dbHelper);
-		ambientDao = new AmbientDao(dbHelper);
-		
-		this.fragment = fragment;
-	}
-
-	@Override
-	protected Void doInBackground(List<Parcelable>... params) {
-		for (Parcelable parcelable : params[0]) {
-			Observation value = (Observation) parcelable;
-
-			long typeId = value.getObservationTypeId();
-			if (typeId == Observation.TYPE_INDEX_BLOOD_PRESSURE) {
-				pressureDao.insert(new BloodPressure(value.getTime(),
-						LittleEndian.readInt(value.getValue(), 0),
-						LittleEndian.readInt(value.getValue(), 4)));
-			} else if (typeId == Observation.TYPE_INDEX_GLUCOSE) {
-				glucoseDao.insert(new Glucose(value.getTime(), LittleEndian
-						.readInt(value.getValue(), 0), LittleEndian
-						.readInt(value.getValue(), 4)));
-			} else if (typeId == Observation.TYPE_INDEX_PULSE) {
-				pulseDao.insert(new Pulse(value.getTime(), LittleEndian
-						.readInt(value.getValue(), 0)));
-			} else if (typeId == Observation.TYPE_INDEX_TEMPERATURE) {
-				temperatureDao.insert(new Temperature(value.getTime(),
-						LittleEndian.readFloat(value.getValue(), 0)));
-			} else if (typeId == Observation.TYPE_INDEX_AMBIENT_TEMPERATURE) {
-				ambientDao.insert(new Ambient(value.getTime(), LittleEndian
-						.readFloat(value.getValue(), 0)));
-			}
-
-		}
-		return null;
-	}
-
-	public void onPostExecute(Void result) {
-
-		fragment.onObservationsSaved();
-	}
-}
-
-class ObservationArrayAdapter extends ArrayAdapter<Record> {
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd HH:mm:ss");
-
-	LayoutInflater inflater;
-
-	private Context context;
-
-	public ObservationArrayAdapter(Context context) {
-		super(context, R.layout.observations_item, android.R.id.text1,
-				new ArrayList<Record>());
-
-		inflater = LayoutInflater.from(context);
-		this.context = context;
-	}
-
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.observations_item, parent,
-					false);
-		}
-
-		final TextView typeView = (TextView) convertView
-				.findViewById(R.id.type);
-		final TextView timeView = (TextView) convertView
-				.findViewById(R.id.time);
-		final TextView valuesView = (TextView) convertView
-				.findViewById(R.id.values);
-
-		final Record item = getItem(position);
-
-		if (item instanceof Ambient) {
-			typeView.setText(R.string.ambient);
-			timeView.setText(R.string.unknown);
-	
-			final Ambient ambient = (Ambient) item;
-			valuesView.setText(context.getString(R.string.ambient_values,
-					ambient.getTemperature()));
-		} else if (item instanceof Temperature) {
-			typeView.setText(R.string.temperature);
-			timeView.setText(R.string.unknown);
-
-			final Temperature ambient = (Temperature) item;
-			valuesView.setText(context.getString(R.string.temperature_values,
-					ambient.getTemperature()));
-		} else if (item instanceof BloodPressure) {
-			typeView.setText(R.string.blood_pressure);
-			timeView.setText(dateFormat.format(item.getTime()));
-
-			final BloodPressure bloodPressure = (BloodPressure) item;
-			valuesView.setText(context.getString(
-					R.string.blood_pressure_values,
-					bloodPressure.getSystolic(), bloodPressure.getDiastolic()));
-		} else if (item instanceof Glucose) {
-			typeView.setText(R.string.glucose);
-			timeView.setText(dateFormat.format(item.getTime()));
-
-			valuesView.setText(context.getString(R.string.glucose_values,
-					((Glucose) item).getGlucose()));
-		} else if (item instanceof Pulse) {
-			typeView.setText(R.string.pulse);
-			timeView.setText(dateFormat.format(item.getTime()));
-
-			valuesView.setText(context.getString(
-					R.string.pulse_values,
-					((Pulse) item).getPulse()));
-		}
-
-		return convertView;
 	}
 }

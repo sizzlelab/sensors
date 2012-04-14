@@ -13,10 +13,10 @@ public class BluetoothUtil {
 	
 	/**
 	 * 
-	 * Checks if device has bluetooth and optionally asks system to display launch dialog.
+	 * Checks if device has Bluetooth and optionally asks system to display launch dialog.
 	 * 
 	 * @param context parent activity
-	 * @return was enabled? 
+	 * @return false if Bluetooth was enabled, true if it wasn't 
 	 */	
 	public static boolean enablingBluetooth(Activity context) {
 		return enablingBluetooth(context, REQUEST_ENABLE_BT, R.string.no_bluetooth);
@@ -24,11 +24,11 @@ public class BluetoothUtil {
 	
 	/**
 	 * 
-	 * Checks if device has bluetooth and optionally asks system to display launch dialog.
+	 * Checks if device has Bluetooth and optionally asks system to display launch dialog.
 	 * 
 	 * @param context parent activity
 	 * @param requestCode to be used in onActivityResult
-	 * @param Resourse pointing to "You have no bluetooth!" message
+	 * @param Resourse pointing to "You have no Bluetooth!" message
 	 * @return was it disabled? 
 	 */
 	

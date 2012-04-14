@@ -19,7 +19,6 @@ import com.viewpagerindicator.TabPageIndicator;
 import fi.soberit.fora.D40CachedSink;
 import fi.soberit.fora.IR21Sink;
 import fi.soberit.sensors.DriverConnection;
-import fi.soberit.sensors.DriverStatusListener;
 import fi.soberit.sensors.Observation;
 import fi.soberit.sensors.SinkSensorConnection;
 import fi.soberit.sensors.bluetooth.BluetoothPairingActivity;
@@ -218,7 +217,7 @@ public class ForaBrowser extends SherlockFragmentActivity  {
 			connection.sendStartConnecting(ir21Address);
 		}
 	}
-
+	
 	
 	public void chooseBtDevice(SinkSensorConnection connection) {
 		Log.d(TAG, "chooseBtDevice");
@@ -238,9 +237,7 @@ public class ForaBrowser extends SherlockFragmentActivity  {
 		startActivityForResult(settings, requestCode);
 	}
 	
-	public SinkSensorConnection getConnection(String driverAction) {
-		Log.d(TAG, "getConnection(" + driverAction + ")");
-		
+	public SinkSensorConnection getConnection(String driverAction) {		
 		final SinkSensorConnection conn = (SinkSensorConnection) connections.get(driverAction);
 		
 		Log.d(TAG, "getConnection(" + driverAction + ") = " + conn);
