@@ -21,7 +21,7 @@ import fi.soberit.fora.IR21Sink;
 import fi.soberit.sensors.DriverConnection;
 import fi.soberit.sensors.DriverStatusListener;
 import fi.soberit.sensors.Observation;
-import fi.soberit.sensors.SinkDriverConnection;
+import fi.soberit.sensors.SinkSensorConnection;
 import fi.soberit.sensors.bluetooth.BluetoothPairingActivity;
 
 
@@ -86,11 +86,11 @@ public class ForaBrowser extends SherlockFragmentActivity  {
 			mTabsAdapter.setTabSelected(sis.getInt(TAB_INDEX));
 		}
 		
-		final DriverConnection d40Connection = new SinkDriverConnection(D40CachedSink.ACTION, clientId);
+		final DriverConnection d40Connection = new SinkSensorConnection(D40CachedSink.ACTION, clientId);
 		d40Connection.bind(this);
 		connections.put(D40CachedSink.ACTION, d40Connection);
 		
-		final DriverConnection ir21Connection = new SinkDriverConnection(IR21Sink.ACTION, clientId);
+		final DriverConnection ir21Connection = new SinkSensorConnection(IR21Sink.ACTION, clientId);
 		ir21Connection.bind(this);
 		connections.put(IR21Sink.ACTION, ir21Connection);
 	}
@@ -118,11 +118,11 @@ public class ForaBrowser extends SherlockFragmentActivity  {
 	@Override
 	public void onBackPressed() {
 		for (DriverConnection connection : connections.values()) {
-			if (((SinkDriverConnection) connection).getDriverStatus() != DriverStatusListener.CONNECTED) {
+			if (((SinkSensorConnection) connection).getStatus() != SinkSensorConnection.CONNECTED) {
 				continue;
 			}
 			
-			((SinkDriverConnection) connection).sendDisconnectRequest();
+			((SinkSensorConnection) connection).sendDisconnectRequest();
 		}
 				
 		super.onBackPressed();
@@ -190,9 +190,8 @@ public class ForaBrowser extends SherlockFragmentActivity  {
 
 	public void connect(String driverAction) {
 		
-		final SinkDriverConnection connection = (SinkDriverConnection) connections.get(driverAction);
+		final SinkSensorConnection connection = (SinkSensorConnection) connections.get(driverAction);
 		final SharedPreferences prefs = getSharedPreferences(ForaSettings.APP_PREFERENCES_FILE, MODE_PRIVATE);
-		
 		
 		if (D40CachedSink.ACTION.equals(driverAction)) {
 			final String d40Address = prefs.getString(ForaSettings.D40_BLUETOOTH_ADDRESS, null);
@@ -221,13 +220,11 @@ public class ForaBrowser extends SherlockFragmentActivity  {
 	}
 
 	
-	public void chooseBtDevice(SinkDriverConnection connection) {
+	public void chooseBtDevice(SinkSensorConnection connection) {
 		Log.d(TAG, "chooseBtDevice");
 
 		final boolean d40 = D40CachedSink.ACTION.equals(connection.getDriverAction());
-		
 		final int requestCode = d40 ? REQUEST_CHOOSE_D40_DEVICE : REQUEST_CHOOSE_IR21_DEVICE;
-		
 		
 		final Intent settings = new Intent(this,
 				BluetoothPairingActivity.class);
@@ -241,10 +238,10 @@ public class ForaBrowser extends SherlockFragmentActivity  {
 		startActivityForResult(settings, requestCode);
 	}
 	
-	public SinkDriverConnection getConnection(String driverAction) {
+	public SinkSensorConnection getConnection(String driverAction) {
 		Log.d(TAG, "getConnection(" + driverAction + ")");
 		
-		final SinkDriverConnection conn = (SinkDriverConnection) connections.get(driverAction);
+		final SinkSensorConnection conn = (SinkSensorConnection) connections.get(driverAction);
 		
 		Log.d(TAG, "getConnection(" + driverAction + ") = " + conn);
 

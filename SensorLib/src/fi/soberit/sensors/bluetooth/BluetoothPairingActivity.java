@@ -24,6 +24,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +41,8 @@ import android.widget.Toast;
 import fi.soberit.sensors.DriverConnection;
 import fi.soberit.sensors.DriverStatusListener;
 import fi.soberit.sensors.R;
-import fi.soberit.sensors.SinkDriverConnection;
+import fi.soberit.sensors.SensorDriverConnection;
+import fi.soberit.sensors.SinkSensorConnection;
 import fi.soberit.sensors.util.BluetoothUtil;
 
 public class BluetoothPairingActivity extends Activity implements 
@@ -82,7 +84,7 @@ public class BluetoothPairingActivity extends Activity implements
 
 	private String driverAction;
 
-	private SinkDriverConnection connection;
+	private SinkSensorConnection connection;
 	
 	private String clientId = BluetoothPairingActivity.class.getName();
 
@@ -134,7 +136,7 @@ public class BluetoothPairingActivity extends Activity implements
 		listView = (ListView) findViewById(android.R.id.list);
 		listView.setAdapter(listAdapter);
 				
-		connection = new SinkDriverConnection(driverAction, clientId);
+		connection = new SinkSensorConnection(driverAction, clientId);
 		
 		connection.addDriverStatusListener(this);
 		connection.bind(this, false);
@@ -198,7 +200,7 @@ public class BluetoothPairingActivity extends Activity implements
     		return;
     	}
     	
-		if (disconnectWhenDone && connection.getDriverStatus() == DriverStatusListener.CONNECTED) {
+		if (disconnectWhenDone && connection.getStatus() == SensorDriverConnection.CONNECTED) {
 			connection.sendDisconnectRequest();
 		}
 		
@@ -254,7 +256,7 @@ public class BluetoothPairingActivity extends Activity implements
 
 	private void startConnecting(String action, final String address) {
 		
-		if (connection.getDriverStatus() == DriverStatusListener.UNBOUND) {
+		if (connection.getStatus() == SensorDriverConnection.UNBOUND) {
 			throw new RuntimeException("Shouldn't happen! : ");
 		}
 	
@@ -434,11 +436,11 @@ public class BluetoothPairingActivity extends Activity implements
 	public void onDriverStatusChanged(DriverConnection connection, int oldStatus, int newStatus) {
 		Log.d(TAG, String.format("onDriverStatusChanged (%s) = %d", connection.getDriverAction(), newStatus));
 				
-    	final String deviceAddress = ((SinkDriverConnection) connection).getDeviceAddress();
+    	final String deviceAddress = ((SinkSensorConnection) connection).getSensorAddress();
     	final BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
 		
     	// user comes back from another application, while pairing has been happening at the background
-		if (newStatus == DriverStatusListener.CONNECTING && (progressDialog == null || !progressDialog.isShowing())) {
+		if (newStatus == SensorDriverConnection.CONNECTING && (progressDialog == null || !progressDialog.isShowing())) {
 			final BluetoothDevice device = btAdapter.getRemoteDevice(deviceAddress);
     		
     		final String name = device.getName() != null ? device.getName() : getString(R.string.unknown);
@@ -448,8 +450,8 @@ public class BluetoothPairingActivity extends Activity implements
     	}
 		
 		
-		if ((newStatus == DriverStatusListener.CONNECTED || 
-			newStatus == DriverStatusListener.BOUND) && 
+		if ((newStatus == SensorDriverConnection.CONNECTED || 
+			newStatus == SensorDriverConnection.BOUND) && 
 			progressDialog != null && progressDialog.isShowing()) {
 						
 			progressDialog.dismiss();
@@ -460,10 +462,10 @@ public class BluetoothPairingActivity extends Activity implements
 		 * we need to terminate previous connection.
 		 */
 		
-		if (newStatus == DriverStatusListener.CONNECTED && deviceToConnect == null) {
+		if (newStatus == SensorDriverConnection.CONNECTED && deviceToConnect == null) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			
-			final BluetoothDevice device = btAdapter.getRemoteDevice(((SinkDriverConnection) connection).getDeviceAddress());
+			final BluetoothDevice device = btAdapter.getRemoteDevice(((SinkSensorConnection) connection).getSensorAddress());
 			
 			final String name = device.getName() != null
 					? device.getName() + " (" + device.getAddress() + ")"
@@ -481,11 +483,11 @@ public class BluetoothPairingActivity extends Activity implements
 			return;
 		}
 		
-		if (newStatus == DriverStatusListener.BOUND && deviceToConnect != null) {
+		if (newStatus == SensorDriverConnection.BOUND && deviceToConnect != null) {
 			markAsIrresponsive(deviceToConnect);
 		}
 
-		if (newStatus != DriverStatusListener.CONNECTED) {
+		if (newStatus != SensorDriverConnection.CONNECTED) {
 			return;
 		}
 
@@ -533,5 +535,9 @@ public class BluetoothPairingActivity extends Activity implements
 			setResult(Activity.RESULT_CANCELED);
 			finish();
 		}
+	}
+
+	@Override
+	public void onReceivedMessage(DriverConnection connection, Message msg) {		
 	}
 }

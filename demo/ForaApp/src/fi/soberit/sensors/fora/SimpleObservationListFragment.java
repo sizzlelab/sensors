@@ -35,12 +35,12 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 import fi.soberit.sensors.DriverConnection;
-import fi.soberit.sensors.DriverInterface;
+import fi.soberit.sensors.SensorDriverConnection;
 import fi.soberit.sensors.DriverStatusListener;
 import fi.soberit.sensors.Observation;
-import fi.soberit.sensors.MessagesListener;
+import fi.soberit.sensors.R;
 import fi.soberit.sensors.SensorSinkService;
-import fi.soberit.sensors.SinkDriverConnection;
+import fi.soberit.sensors.SinkSensorConnection;
 import fi.soberit.sensors.db.MGDatabaseHelper;
 import fi.soberit.sensors.fora.db.Ambient;
 import fi.soberit.sensors.fora.db.AmbientDao;
@@ -59,7 +59,7 @@ import fi.soberit.sensors.util.LittleEndian;
 public class SimpleObservationListFragment extends SherlockFragment implements
 		LoaderManager.LoaderCallbacks<Collection<Record>>, 
 		OnRefreshListener, 
-		MessagesListener, DriverStatusListener {
+		DriverStatusListener {
 
 	private static final int STATUS_INDICATOR_DISCONNECTED = 1;
 
@@ -97,7 +97,7 @@ public class SimpleObservationListFragment extends SherlockFragment implements
 
 	private long[] types;
 	
-	private SinkDriverConnection connection;
+	private SinkSensorConnection connection;
 
 	
 	@Override
@@ -143,7 +143,6 @@ public class SimpleObservationListFragment extends SherlockFragment implements
 		
 		mAdapter = new ObservationArrayAdapter(getActivity());
 		listView.setAdapter(mAdapter);
-
 		
 		setHasOptionsMenu(true);	
 
@@ -163,8 +162,6 @@ public class SimpleObservationListFragment extends SherlockFragment implements
 		super.onStart();
 				
 		connection.addDriverStatusListener(this);
-		connection.addMessagesListener(this);
-
 	}
 	
 	@Override
@@ -174,7 +171,7 @@ public class SimpleObservationListFragment extends SherlockFragment implements
 		Log.d(TAG, "onResume");	
 		
 		
-		if (connection.getDriverStatus() != DriverStatusListener.UNBOUND) {
+		if (connection.getStatus() != SensorDriverConnection.UNBOUND) {
 			connection.sendRequestConnectionStatus();
 		}
 
@@ -188,7 +185,6 @@ public class SimpleObservationListFragment extends SherlockFragment implements
 		getLoaderManager().destroyLoader(OBSERVATIONS_LOADER_ID);
 		
 		connection.removeDriverStatusListener(this);
-		connection.removeMessagesListener(this);
 	}
 	
 
@@ -254,9 +250,12 @@ public class SimpleObservationListFragment extends SherlockFragment implements
 
 		Log.d(TAG, "connection: " + connection);
 		
-		final int status = connection.getDriverStatus();
+		final int status = connection.getStatus();
 		Log.d(TAG, String.format("onLoadFinished %d %d", status, mAdapter.getCount()));
-		boolean noCommunicationInProgress = (status == CONNECTED || status == BOUND || status == UNBOUND);
+		boolean noCommunicationInProgress = 
+				(status == SensorDriverConnection.CONNECTED || 
+				 status == SensorDriverConnection.BOUND || 
+				 status == SensorDriverConnection.UNBOUND);
 		setListShown(noCommunicationInProgress);
 		
 		pullToRefreshView.onRefreshComplete();
@@ -278,8 +277,6 @@ public class SimpleObservationListFragment extends SherlockFragment implements
 			
 			progressView.setVisibility(View.VISIBLE);
 		}
-		
-
 	}
 	
 	@Override
@@ -293,7 +290,7 @@ public class SimpleObservationListFragment extends SherlockFragment implements
 		
 		switch(newStatus) {
 		
-		case DriverStatusListener.CONNECTING:
+		case SensorDriverConnection.CONNECTING:
 			setListShown(false);
 			
 			statusIndicator.setImageLevel(STATUS_INDICATOR_CONNECTING);
@@ -301,39 +298,39 @@ public class SimpleObservationListFragment extends SherlockFragment implements
 			
 			break;
 			
-		case DriverStatusListener.CONNECTED:
+		case SensorDriverConnection.CONNECTED:
 		{
 			statusIndicator.setImageLevel(STATUS_INDICATOR_CONNECTED);
 			statusLine.setText(R.string.connected);
 			
-			if (oldStatus == DriverStatusListener.DOWNLOADING) {
+			if (oldStatus == SinkSensorConnection.DOWNLOADING) {
 				// this is taken care of in onObservationsSaved() 
 				
 				return;
 			} else 
-			if (oldStatus != DriverStatusListener.COUNTING) {
-				((SinkDriverConnection) connection).sendReadObservationNumberMessage();
+			if (oldStatus != SinkSensorConnection.COUNTING) {
+				((SinkSensorConnection) connection).sendReadObservationNumberMessage();
 			}
 				
 			
 			break;
 		}
 			
-		case DriverStatusListener.DOWNLOADING:
+		case SinkSensorConnection.DOWNLOADING:
 			setListShown(false);
 			
 			statusLine.setText(R.string.downloading_data);
 			statusIndicator.setImageLevel(STATUS_INDICATOR_DOWNLOADING);
 			break;
 		
-		case DriverStatusListener.UNBOUND:
-		case DriverStatusListener.BOUND: 
+		case SensorDriverConnection.UNBOUND:
+		case SensorDriverConnection.BOUND: 
 		{
 			statusLine.setText(R.string.disconnected);
 
 			statusIndicator.setImageLevel(STATUS_INDICATOR_DISCONNECTED);
 									
-			if (oldStatus != DriverStatusListener.CONNECTED) {
+			if (oldStatus != SensorDriverConnection.CONNECTED) {
 				getLoaderManager().initLoader(OBSERVATIONS_LOADER_ID, getArguments(), this);
 			} else 
 			break;
@@ -343,25 +340,25 @@ public class SimpleObservationListFragment extends SherlockFragment implements
 
 	@Override
 	public void onRefresh() {
-		final SinkDriverConnection conn = (SinkDriverConnection) connection;
+		final SinkSensorConnection conn = (SinkSensorConnection) connection;
 
-		switch(conn.getDriverStatus()) {
-		case DriverStatusListener.CONNECTING:
-		case DriverStatusListener.COUNTING:
-		case DriverStatusListener.DOWNLOADING:
+		switch(conn.getStatus()) {
+		case SensorDriverConnection.CONNECTING:
+		case SinkSensorConnection.COUNTING:
+		case SinkSensorConnection.DOWNLOADING:
 			
 			Toast.makeText(activity, R.string.communication_in_process, Toast.LENGTH_LONG).show();
 			
 			return;
 			
-		case DriverStatusListener.CONNECTED:
+		case SensorDriverConnection.CONNECTED:
 			setListShown(false);
 
 			connection.sendReadObservationNumberMessage();
 			break;
 					
-		case DriverStatusListener.UNBOUND:
-		case DriverStatusListener.BOUND:
+		case SensorDriverConnection.UNBOUND:
+		case SensorDriverConnection.BOUND:
 		{	
 
     		setListShown(false);
@@ -381,7 +378,7 @@ public class SimpleObservationListFragment extends SherlockFragment implements
 		case SensorSinkService.RESPONSE_CONNECTION_TIMEOUT:
 			Toast.makeText(activity, "Timeout", Toast.LENGTH_LONG).show();
 
-			activity.chooseBtDevice((SinkDriverConnection) connection);
+			activity.chooseBtDevice((SinkSensorConnection) connection);
 
 			break;
 		
@@ -389,7 +386,7 @@ public class SimpleObservationListFragment extends SherlockFragment implements
 			final int observationNum = msg.arg1;
 			Log.d(TAG, "Sink object number is " + observationNum);
 
-			((SinkDriverConnection) connection).sendReadObservations(
+			((SinkSensorConnection) connection).sendReadObservations(
 					types, 0,
 					observationNum);
 			break;
