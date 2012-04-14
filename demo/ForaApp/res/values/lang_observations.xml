@@ -1,18 +1,12 @@
-<resources>
-    <item type="id" name="settings_menu" />
-    <item type="id" name="refresh_menu" />
-    <item type="id" name="pair_menu" />
-    <item type="id" name="observations_fragment_menu" />
-    
+<resources>    
+	<string name="app_name">Fora D40 Viewer</string>
+	
 	<string name="temperature">Temperature</string>
 	<string name="ambient">Ambient</string>
 	<string name="blood_pressure">Blood Pressure</string>
 	<string name="pulse">Pulse</string>
 	<string name="glucose">Glucose</string>
-	
-	<string name="bpm_bgm_tab">Blood Pressure and Glucose</string>
-	<string name="thermometer_tab">Temperature</string>
-	
+	<string name="unknown">unknown</string>	
 	
 	<string name="temperature_values">%1$s C</string>
 	<string name="ambient_values">%1$s C</string>
@@ -20,7 +14,8 @@
 	<string name="pulse_values">%1$d bpm</string>
 	<string name="glucose_values">%1$d mg/Dl</string>
 	
-	<string name="unknown">unknown</string>
+	<string name="settings">Settings</string>
+	
 	<string name="no_observation">
 		<b>No observations</b> available at the moment.\n\n
 		
@@ -37,10 +32,12 @@
 	<string name="disconnected">Disconnected</string>
 	<string name="connecting">Connecting</string>
 	<string name="downloading_data">Downloading data</string>
-	
-	<string name="settings">Settings</string>
-	
-	<string name="refresh_menu">Refresh</string>
-	
+		
 	<string name="communication_in_process">Already synchronising with the device!</string>
+	
+    <string name="bluetooth_preferences">Bluetooth connection</string>
+    <string name="fora_d40_device_label">Fora D40 device</string>
+    
+    <string name="no_d40_bluetooth_address">Please, pair with Fora d40 device!</string>
+	
 </resources>

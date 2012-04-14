@@ -25,8 +25,6 @@ public class DatabaseHelper extends MGDatabaseHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		
-		db.execSQL(TemperatureDao.TEMPERATURE_CREATE);
-		db.execSQL(AmbientDao.AMBIENT_CREATE);
 		db.execSQL(BloodPressureDao.PRESSURE_CREATE);
 		db.execSQL(PulseDao.PULSE_CREATE);
 		db.execSQL(GlucoseDao.GLUCOSE_CREATE);
@@ -36,8 +34,6 @@ public class DatabaseHelper extends MGDatabaseHelper {
 	@Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-		db.execSQL(TemperatureDao.TEMPERATURE_DROP);
-		db.execSQL(AmbientDao.AMBIENT_DROP);
 		db.execSQL(BloodPressureDao.PRESSURE_DROP);
 		db.execSQL(PulseDao.PULSE_DROP);
 		db.execSQL(GlucoseDao.GLUCOSE_DROP);

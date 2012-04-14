@@ -10,12 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import fi.soberit.sensors.R;
-import fi.soberit.sensors.fora.db.Ambient;
 import fi.soberit.sensors.fora.db.BloodPressure;
 import fi.soberit.sensors.fora.db.Glucose;
 import fi.soberit.sensors.fora.db.Pulse;
 import fi.soberit.sensors.fora.db.Record;
-import fi.soberit.sensors.fora.db.Temperature;
 
 class ObservationArrayAdapter extends ArrayAdapter<Record> {
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd HH:mm:ss");
@@ -48,21 +46,7 @@ class ObservationArrayAdapter extends ArrayAdapter<Record> {
 
 		final Record item = getItem(position);
 
-		if (item instanceof Ambient) {
-			typeView.setText(R.string.ambient);
-			timeView.setText(R.string.unknown);
-	
-			final Ambient ambient = (Ambient) item;
-			valuesView.setText(context.getString(R.string.ambient_values,
-					ambient.getTemperature()));
-		} else if (item instanceof Temperature) {
-			typeView.setText(R.string.temperature);
-			timeView.setText(R.string.unknown);
-
-			final Temperature ambient = (Temperature) item;
-			valuesView.setText(context.getString(R.string.temperature_values,
-					ambient.getTemperature()));
-		} else if (item instanceof BloodPressure) {
+		if (item instanceof BloodPressure) {
 			typeView.setText(R.string.blood_pressure);
 			timeView.setText(dateFormat.format(item.getTime()));
 

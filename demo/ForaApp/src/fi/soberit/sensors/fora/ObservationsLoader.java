@@ -7,13 +7,11 @@ import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 import fi.soberit.sensors.Observation;
-import fi.soberit.sensors.fora.db.AmbientDao;
 import fi.soberit.sensors.fora.db.BloodPressureDao;
 import fi.soberit.sensors.fora.db.DatabaseHelper;
 import fi.soberit.sensors.fora.db.GlucoseDao;
 import fi.soberit.sensors.fora.db.PulseDao;
 import fi.soberit.sensors.fora.db.Record;
-import fi.soberit.sensors.fora.db.TemperatureDao;
 
 class ObservationsLoader extends AsyncTaskLoader<Collection<Record>> {
 
@@ -22,8 +20,6 @@ class ObservationsLoader extends AsyncTaskLoader<Collection<Record>> {
 	private BloodPressureDao pressureDao;
 	private PulseDao pulseDao;
 	private GlucoseDao glucoseDao;
-	private TemperatureDao temperatureDao;
-	private AmbientDao ambientDao;
 
 	private long[] types;
 
@@ -31,8 +27,6 @@ class ObservationsLoader extends AsyncTaskLoader<Collection<Record>> {
 
 	public ObservationsLoader(Context context, long[] types) {
 		super(context);
-
-		Log.d(TAG, "ObservationsLoader()");
 		
 		this.types = types;
 
@@ -41,8 +35,6 @@ class ObservationsLoader extends AsyncTaskLoader<Collection<Record>> {
 		pressureDao = new BloodPressureDao(dbHelper);
 		pulseDao = new PulseDao(dbHelper);
 		glucoseDao = new GlucoseDao(dbHelper);
-		temperatureDao = new TemperatureDao(dbHelper);
-		ambientDao = new AmbientDao(dbHelper);	
 	}
 
 	@Override
@@ -62,13 +54,6 @@ class ObservationsLoader extends AsyncTaskLoader<Collection<Record>> {
 			} else if (type == Observation.TYPE_INDEX_PULSE) {
 				result.addAll(pulseDao.getMeasurements());
 
-			} else if (type == Observation.TYPE_INDEX_AMBIENT_TEMPERATURE) {
-
-				result.addAll(ambientDao.getMeasurements());
-			} else if (type == Observation.TYPE_INDEX_TEMPERATURE) {
-
-				
-				result.addAll(temperatureDao.getMeasurements());
 			}
 		}
 

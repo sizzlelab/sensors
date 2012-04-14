@@ -16,7 +16,6 @@
 
         <activity 
             android:name=".ForaBrowser"
-            android:theme="@style/StyledIndicators"            
             >
             <intent-filter>
                 

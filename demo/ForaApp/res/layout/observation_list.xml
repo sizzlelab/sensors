@@ -5,6 +5,50 @@
     android:orientation="vertical"
     >
     
+   	<RelativeLayout 
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+        android:padding="8dp"
+	    >	    
+	    <TextView 
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	        
+	        android:text="@string/app_name"
+	        
+	        android:textColor="#ffffff"
+	        android:textSize="20dp"
+   	        android:layout_alignParentLeft="true"
+			android:layout_centerVertical="true"
+	        />
+	    
+   	    <Button 
+	        android:id="@+id/setting"
+	        android:layout_width="48dp"
+	        android:layout_height="48dp"
+	        android:background="@drawable/settings"
+
+	        android:layout_alignParentRight="true"
+	        />
+   	    
+  	    <Button 
+	        android:id="@+id/refresh"
+	        android:layout_width="48dp"
+	        android:layout_height="48dp"
+    	    android:background="@drawable/refresh"
+	        
+	        android:layout_toLeftOf="@id/setting"
+	        />
+   	    
+	</RelativeLayout>	
+    
+   	<View
+   	    android:layout_height="1dp"
+   	    android:layout_width="fill_parent"
+   	    android:background="@android:color/white"
+   	    />
+    
+    
 	<FrameLayout
 		android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
@@ -19,7 +63,7 @@
 			>
 			
     		<TextView
-				android:id="@android:id/empty"
+				android:id="@+id/empty_list_message"
 				android:layout_width="fill_parent"
 			    android:layout_height="fill_parent"
 				android:gravity="center_vertical"
@@ -40,11 +84,11 @@
 						/>
 		</LinearLayout>
 			
-	   <com.handmark.pulltorefresh.library.PullToRefreshListView
+	   <ListView
 	       android:id="@+id/observations_list"
 	       android:layout_height="fill_parent"
 	       android:layout_width="fill_parent"
-   			android:visibility="gone"
+   		   android:visibility="gone"
 
 	       />
    	</FrameLayout>
