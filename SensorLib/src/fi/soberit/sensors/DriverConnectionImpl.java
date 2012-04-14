@@ -66,7 +66,7 @@ public class DriverConnectionImpl extends Handler
 				return;
 			}
 			
-			sendMessage(SinkService.REQUEST_REGISTER_OUT_CLIENT);
+			sendMessage(DriverService.REQUEST_REGISTER_OUT_CLIENT);
 			
 			Log.d(TAG, "unbinding from " + driverAction);
 			
@@ -92,13 +92,13 @@ public class DriverConnectionImpl extends Handler
 	
 	protected void sendRequestRegisterClient() {
 		
-		setExecutedCommand(SinkService.REQUEST_REGISTER_CLIENT);
+		setExecutedCommand(DriverService.REQUEST_REGISTER_CLIENT);
 		
 		final Bundle b = new Bundle();
-		b.putString(SinkService.REQUEST_FIELD_CLIENT_ID, clientId);
-		b.putParcelable(SinkService.REQUEST_FIELD_REPLY_TO, incomingMessager);
+		b.putString(DriverService.REQUEST_FIELD_CLIENT_ID, clientId);
+		b.putParcelable(DriverService.REQUEST_FIELD_REPLY_TO, incomingMessager);
 		
-		sendMessage(SinkService.REQUEST_REGISTER_CLIENT, 0, 0, b);
+		sendMessage(DriverService.REQUEST_REGISTER_CLIENT, 0, 0, b);
 	}
 	
 	protected void sendMessage(int id) {
@@ -133,7 +133,7 @@ public class DriverConnectionImpl extends Handler
 			
 			final Bundle bundle = b == null ? new Bundle() : b;
 			
-			bundle.putString(SinkService.REQUEST_FIELD_CLIENT_ID, clientId);
+			bundle.putString(DriverService.REQUEST_FIELD_CLIENT_ID, clientId);
 			
 			msg.setData(bundle);
 			

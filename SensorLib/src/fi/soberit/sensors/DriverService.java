@@ -26,13 +26,13 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 
-public abstract class SinkService extends Service {
+public abstract class DriverService extends Service {
 
 	public final String TAG = this.getClass().getSimpleName();
 	
 	public static String STARTED_PREFIX = ".STARTED";
 
-	public static final long STOP_SINK_DELAY = 60 * 1000;
+	public static final long STOP_DRIVER_DELAY = 60 * 1000;
 	
 	public static final String REQUEST_FIELD_MSG_ID = "msg id";
 	
@@ -177,8 +177,8 @@ public abstract class SinkService extends Service {
 					
 					if (clients.size() == 0) {
 						incomingHandler.postDelayed(
-								new StopSink(SinkService.this), 
-								STOP_SINK_DELAY);
+								new StopDriver(DriverService.this), 
+								STOP_DRIVER_DELAY);
 						break;
 					}
 					
@@ -285,17 +285,17 @@ public abstract class SinkService extends Service {
 	}
 
 	protected void onStopSession() {
-		SinkService.this.stopSelf();
+		DriverService.this.stopSelf();
 	}
 	
 	public abstract String getDriverAction();
 	
 	
-	class StopSink implements Runnable {
+	class StopDriver implements Runnable {
 
-		private SinkService sink;
+		private DriverService sink;
 
-		public StopSink(SinkService sink) {
+		public StopDriver(DriverService sink) {
 			this.sink = sink;
 		}
 		

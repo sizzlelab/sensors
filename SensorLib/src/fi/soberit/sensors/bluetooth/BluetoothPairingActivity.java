@@ -42,7 +42,7 @@ import fi.soberit.sensors.DriverConnection;
 import fi.soberit.sensors.DriverStatusListener;
 import fi.soberit.sensors.R;
 import fi.soberit.sensors.SensorDriverConnection;
-import fi.soberit.sensors.SinkSensorConnection;
+import fi.soberit.sensors.SensorSinkConnection;
 import fi.soberit.sensors.util.BluetoothUtil;
 
 public class BluetoothPairingActivity extends Activity implements 
@@ -84,7 +84,7 @@ public class BluetoothPairingActivity extends Activity implements
 
 	private String driverAction;
 
-	private SinkSensorConnection connection;
+	private SensorSinkConnection connection;
 	
 	private String clientId = BluetoothPairingActivity.class.getName();
 
@@ -136,7 +136,7 @@ public class BluetoothPairingActivity extends Activity implements
 		listView = (ListView) findViewById(android.R.id.list);
 		listView.setAdapter(listAdapter);
 				
-		connection = new SinkSensorConnection(driverAction, clientId);
+		connection = new SensorSinkConnection(driverAction, clientId);
 		
 		connection.addDriverStatusListener(this);
 		connection.bind(this, false);
@@ -436,7 +436,7 @@ public class BluetoothPairingActivity extends Activity implements
 	public void onDriverStatusChanged(DriverConnection connection, int oldStatus, int newStatus) {
 		Log.d(TAG, String.format("onDriverStatusChanged (%s) = %d", connection.getDriverAction(), newStatus));
 				
-    	final String deviceAddress = ((SinkSensorConnection) connection).getSensorAddress();
+    	final String deviceAddress = ((SensorSinkConnection) connection).getSensorAddress();
     	final BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
 		
     	// user comes back from another application, while pairing has been happening at the background
@@ -465,7 +465,7 @@ public class BluetoothPairingActivity extends Activity implements
 		if (newStatus == SensorDriverConnection.CONNECTED && deviceToConnect == null) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			
-			final BluetoothDevice device = btAdapter.getRemoteDevice(((SinkSensorConnection) connection).getSensorAddress());
+			final BluetoothDevice device = btAdapter.getRemoteDevice(((SensorSinkConnection) connection).getSensorAddress());
 			
 			final String name = device.getName() != null
 					? device.getName() + " (" + device.getAddress() + ")"

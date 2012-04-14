@@ -30,7 +30,7 @@ import android.util.Log;
 import fi.soberit.sensors.util.BundleFactory;
 import fi.soberit.sensors.util.ThreadUtil;
 
-public abstract class SensorSinkService extends SinkService {
+public abstract class SensorSinkService extends DriverService {
 
 	public static final int RESPONSE_REGISTER_CLIENT = REQUEST_REGISTER_CLIENT + 1;
 			

@@ -17,7 +17,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 
-public class SinkSensorConnection extends DriverConnectionImpl 
+public class SensorSinkConnection extends DriverConnectionImpl 
 	implements ServiceConnection, SensorDriverConnection  {
 
 	private static final int NO_COMMAND = -1;
@@ -30,7 +30,7 @@ public class SinkSensorConnection extends DriverConnectionImpl
 	private boolean requestStatusOnConnect;
 		
 	
-	public SinkSensorConnection(String driverAction, String clientId) {
+	public SensorSinkConnection(String driverAction, String clientId) {
 		super(driverAction, clientId);	
 	}
 	
@@ -53,7 +53,7 @@ public class SinkSensorConnection extends DriverConnectionImpl
 				return;
 			}
 			
-			sendMessage(SinkService.REQUEST_REGISTER_OUT_CLIENT);
+			sendMessage(DriverService.REQUEST_REGISTER_OUT_CLIENT);
 			
 			Log.d(TAG, "unbinding from " + driverAction);
 			
