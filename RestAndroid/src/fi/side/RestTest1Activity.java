@@ -1,23 +1,7 @@
 package fi.side;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.sql.Timestamp;
-import java.util.Enumeration;
-
 import org.restlet.Server;
-import org.restlet.data.Form;
 import org.restlet.data.Protocol;
-import org.restlet.resource.ClientResource;
-
-import fi.side.restlet.AndroidRestlet;
-import fi.side.sensors.Sensor;
-import fi.side.sensors.SensorListener;
-import fi.soberit.ubiserv.Data.DataRecord;
-import fi.soberit.ubiserv.Data.IDataAdd;
-
- 
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -32,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import fi.side.restlet.AndroidRestlet;
 
 public class RestTest1Activity extends Activity {
     /** Called when the activity is first created. */

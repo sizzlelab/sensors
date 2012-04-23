@@ -4,18 +4,12 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.sql.Timestamp;
+import java.text.Normalizer.Form;
 import java.util.Enumeration;
 
-import org.restlet.data.Form;
 import org.restlet.resource.ClientResource;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.util.Log;
-import fi.side.R;
 import fi.side.sensors.Sensor;
 import fi.side.sensors.SensorListener;
 import fi.soberit.ubiserv.Data.DataRecord;
@@ -80,10 +74,15 @@ public class AndroidRestlet {
 				  String ip = getLocalIpAddress();
 				   ClientResource client =
 							new ClientResource("http://" + ipAddress + ":8321/ip/");
-							Form form = new Form();
+						
+				   			/*
+				   			Form form = new Form();
 							form.add("ip",ip);
 							form.add("imei",phoneUID); 
+							*/
 							
+				    
+				   
 							IpAdressRecord ipRecord = new IpAdressRecord();
 							ipRecord.setAddress(ip);
 							ipRecord.setImei(phoneUID);
@@ -96,7 +95,7 @@ public class AndroidRestlet {
 				   public void HandleSensorData(String data) {
 						SendData(formData(data));
 				   };
-			   };
+			   };  
 			  
 				private static DataRecord formData(String data){
 					DataRecord dataRecord = new DataRecord();
@@ -108,7 +107,7 @@ public class AndroidRestlet {
 					dataRecord.setDate(tStamp);
 					return dataRecord;
 				}
-				
+				 
 			  
 				/**
 				 * Sending gathered data to the server

@@ -4,9 +4,7 @@ import org.restlet.Application;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.Restlet;
-import org.restlet.Server;
 import org.restlet.data.MediaType;
-import org.restlet.data.Protocol;
 import org.restlet.routing.Router;
 
 import fi.soberit.ubiserv.resources.DataAddResource;

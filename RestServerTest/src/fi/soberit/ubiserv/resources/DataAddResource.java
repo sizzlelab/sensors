@@ -37,7 +37,7 @@ public class DataAddResource extends ServerResource implements IDataAdd {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
  
-		session.persist(data);
+		session.save(data);
 		session.getTransaction().commit();
 		session.close();	
 		

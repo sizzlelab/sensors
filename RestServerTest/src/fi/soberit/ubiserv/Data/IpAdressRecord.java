@@ -3,11 +3,16 @@ package fi.soberit.ubiserv.Data;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity (name="ip_address")
 public class IpAdressRecord implements Serializable {
 	@Id
+	@GeneratedValue(generator="increment")
+	@GenericGenerator(name="increment", strategy = "increment")
 	private long id;
 	private String address;
 	public String getAddress() {
