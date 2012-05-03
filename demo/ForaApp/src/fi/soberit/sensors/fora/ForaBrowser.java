@@ -33,8 +33,8 @@ import fi.soberit.sensors.DriverStatusListener;
 import fi.soberit.sensors.Observation;
 import fi.soberit.sensors.R;
 import fi.soberit.sensors.SensorDriverConnection;
+import fi.soberit.sensors.SensorSinkConnection;
 import fi.soberit.sensors.SensorSinkService;
-import fi.soberit.sensors.SinkSensorConnection;
 import fi.soberit.sensors.bluetooth.BluetoothPairingActivity;
 import fi.soberit.sensors.fora.db.Record;
 
@@ -67,7 +67,7 @@ public class ForaBrowser
 
 	public static String FORA_DEVICES_PREFIX = "taidoc";
 
-	private SinkSensorConnection d40Connection;
+	private SensorSinkConnection d40Connection;
 
 	private ListView listView;
 
@@ -101,7 +101,7 @@ public class ForaBrowser
 		((Button) findViewById(R.id.setting)).setOnClickListener(this);
 		((Button) findViewById(R.id.refresh)).setOnClickListener(this);
 				
-		d40Connection = new SinkSensorConnection(D40CachedSink.ACTION, getClass().getName());
+		d40Connection = new SensorSinkConnection(D40CachedSink.ACTION, getClass().getName());
 		d40Connection.bind(this);
 	}
 	
@@ -119,7 +119,7 @@ public class ForaBrowser
 	
 	@Override
 	public void onBackPressed() {
-		if (d40Connection.getStatus() == SinkSensorConnection.CONNECTED) {
+		if (d40Connection.getStatus() == SensorSinkConnection.CONNECTED) {
 			d40Connection.sendDisconnectRequest();
 		}
 
@@ -181,8 +181,8 @@ public class ForaBrowser
 	public void onRefresh() {
 		switch(d40Connection.getStatus()) {
 		case SensorDriverConnection.CONNECTING:
-		case SinkSensorConnection.COUNTING:
-		case SinkSensorConnection.DOWNLOADING:
+		case SensorSinkConnection.COUNTING:
+		case SensorSinkConnection.DOWNLOADING:
 			
 			Toast.makeText(this, R.string.communication_in_process, Toast.LENGTH_LONG).show();
 			
@@ -219,7 +219,7 @@ public class ForaBrowser
 	}
 	
 	
-	public void chooseBtDevice(SinkSensorConnection connection) {
+	public void chooseBtDevice(SensorSinkConnection connection) {
 		Log.d(TAG, "chooseBtDevice");
 		
 		final Intent settings = new Intent(this,
@@ -253,20 +253,20 @@ public class ForaBrowser
 			statusIndicator.setImageLevel(STATUS_INDICATOR_CONNECTED);
 			statusLine.setText(R.string.connected);
 			
-			if (oldStatus == SinkSensorConnection.DOWNLOADING) {
+			if (oldStatus == SensorSinkConnection.DOWNLOADING) {
 				// this is taken care of in onObservationsSaved() 
 				
 				return;
 			} else 
-			if (oldStatus != SinkSensorConnection.COUNTING) {
-				((SinkSensorConnection) connection).sendReadObservationNumberMessage();
+			if (oldStatus != SensorSinkConnection.COUNTING) {
+				((SensorSinkConnection) connection).sendReadObservationNumberMessage();
 			}
 				
 			
 			break;
 		}
 			
-		case SinkSensorConnection.DOWNLOADING:
+		case SensorSinkConnection.DOWNLOADING:
 			setListShown(false);
 			
 			statusLine.setText(R.string.downloading_data);
@@ -297,7 +297,7 @@ public class ForaBrowser
 		case SensorSinkService.RESPONSE_CONNECTION_TIMEOUT:
 			Toast.makeText(this, "Timeout", Toast.LENGTH_LONG).show();
 
-			chooseBtDevice((SinkSensorConnection) connection);
+			chooseBtDevice((SensorSinkConnection) connection);
 
 			break;
 		
@@ -305,7 +305,7 @@ public class ForaBrowser
 			final int observationNum = msg.arg1;
 			Log.d(TAG, "Sink object number is " + observationNum);
 
-			((SinkSensorConnection) connection).sendReadObservations(
+			((SensorSinkConnection) connection).sendReadObservations(
 					d40Types, 0,
 					observationNum);
 			break;

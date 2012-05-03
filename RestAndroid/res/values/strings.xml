@@ -3,5 +3,5 @@
     <string name="hello">Hello World, RestTest1Activity!</string>
     <string name="app_name">RestTest1</string>
     <string name="tag">RestApp</string>
-    <string name="server_address">86.50.134.78</string>
+    <string name="server_address">86.50.136.144</string>
 </resources>

@@ -9,7 +9,10 @@ import java.util.Enumeration;
 
 import org.restlet.resource.ClientResource;
 
+import android.content.Context;
+import android.telephony.TelephonyManager;
 import android.util.Log;
+import fi.side.R;
 import fi.side.sensors.Sensor;
 import fi.side.sensors.SensorListener;
 import fi.soberit.ubiserv.Data.DataRecord;
@@ -17,18 +20,26 @@ import fi.soberit.ubiserv.Data.IDataAdd;
 import fi.soberit.ubiserv.Data.IpAdressRecord;
 
 public class AndroidRestlet {
+	  static Context context;
 
-	   final static String tag = "RestApp";
+	final static String tag = "RestApp";
 	   public static String ipAddress = "";
 	   static public Sensor sensor;
 	   static private String phoneUID;
 	   
-	   public static void setPhoneUID(String phoneUID) {
-		AndroidRestlet.phoneUID = phoneUID;
+ 
+
+	   public static void setContext(Context ctx) {
+		 context = ctx;
 	}
 
 
-
+	   private static String getPhoneUID() {
+		   	TelephonyManager telephonyManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+			String uid = telephonyManager.getDeviceId();
+			return uid;
+	   }
+	   
 
 
 	public AndroidRestlet(){
@@ -42,9 +53,12 @@ public class AndroidRestlet {
 	   }
 	   
 
-	   public static void init(){
+	   public static void init(Context ctx){
+		context = ctx;
 		sensor = new Sensor();
 	    sensor.addListener(sensorListener);
+	    phoneUID = getPhoneUID(); 
+	    ipAddress = context.getString(R.string.server_address);
 	   }
 	   
 	   
@@ -74,14 +88,6 @@ public class AndroidRestlet {
 				  String ip = getLocalIpAddress();
 				   ClientResource client =
 							new ClientResource("http://" + ipAddress + ":8321/ip/");
-						
-				   			/*
-				   			Form form = new Form();
-							form.add("ip",ip);
-							form.add("imei",phoneUID); 
-							*/
-							
-				    
 				   
 							IpAdressRecord ipRecord = new IpAdressRecord();
 							ipRecord.setAddress(ip);

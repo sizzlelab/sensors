@@ -43,9 +43,10 @@ public class RestTest1Activity extends Activity {
     	
     	registerReceivers();
     	
-    	AndroidRestlet.init();
-    	AndroidRestlet.setPhoneUID(getPhoneUID());
-    	AndroidRestlet.ipAddress = getString(R.string.server_address);
+
+    	AndroidRestlet.init(getApplicationContext());
+   
+    	//AndroidRestlet.ipAddress = getString(R.string.server_address);
     	
     	//TODO: move it to the class
     	//AndroidRestlet.sensor = new Sensor();
