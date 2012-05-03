@@ -41,17 +41,12 @@ public class RestTest1Activity extends Activity {
     	Button btnSendHeartRate = (Button)findViewById(R.id.btnSendHeartRate);
     	btnSendHeartRate.setOnClickListener(onBtnSendHeartRate);
     	
-    	registerReceivers();
+     
     	
 
     	AndroidRestlet.init(getApplicationContext());
    
-    	//AndroidRestlet.ipAddress = getString(R.string.server_address);
-    	
-    	//TODO: move it to the class
-    	//AndroidRestlet.sensor = new Sensor();
-    	//AndroidRestlet.sensor.addListener(sensorListener);
-    	
+   
  
         
     } 
@@ -103,46 +98,11 @@ public class RestTest1Activity extends Activity {
 
 	  
 
-	   
-	  /**
-	   * Getting phone's imei. Used as a unique identifier for a phone
-	   * @return
-	   */
-	   private String getPhoneUID() {
-		   	TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-			String uid = telephonyManager.getDeviceId();
-			return uid;
-	   }
-	   
-	   private void registerReceivers() {    
-	       registerReceiver(mConnReceiver, 
-	           new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-	   }
-	 
+ 
+ 
 	   
 	
     
-	   
-	   private BroadcastReceiver mConnReceiver = new BroadcastReceiver() {
-		   
-		   /**
-		    * Runs when phone's IP address has been changed
-		    */
-		   public void onReceive(Context context, Intent intent) {
-			  //no network available
-			   boolean connectivity = !intent.getBooleanExtra(ConnectivityManager. EXTRA_NO_CONNECTIVITY, false);
-			   String reason = intent.getStringExtra(ConnectivityManager.EXTRA_REASON);
-		       boolean isFailover = intent.getBooleanExtra(ConnectivityManager.EXTRA_IS_FAILOVER, false);
-		       NetworkInfo currentNetworkInfo = (NetworkInfo) intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
-		       NetworkInfo otherNetworkInfo = (NetworkInfo) intent.getParcelableExtra(ConnectivityManager.EXTRA_OTHER_NETWORK_INFO);
-		       if (connectivity) 
-		    	   try {
-		    		   AndroidRestlet.sendIp();
-				} catch (Exception e) {
-					Log.w(tag, e.toString());
-				}
-		    	 
-		   }  
-		   };
+	  
 	   
 }

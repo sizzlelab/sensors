@@ -16,6 +16,7 @@ package fi.soberit.sensors.fora;
 import android.app.Application;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import fi.side.restlet.AndroidRestlet;
 import fi.soberit.fora.D40CachedSink;
 import fi.soberit.fora.IR21Sink;
 import fi.soberit.sensors.fora.R;	
@@ -46,5 +47,12 @@ public class ForaApplication extends Application {
 		 */
 		startService(IntentFactory.create(D40CachedSink.ACTION));
 		startService(IntentFactory.create(IR21Sink.ACTION));
+		
+		/**
+		 * Initialize phone-server interaction object.
+		 */
+		AndroidRestlet.init(getApplicationContext());
+		
+		
 	}
 }

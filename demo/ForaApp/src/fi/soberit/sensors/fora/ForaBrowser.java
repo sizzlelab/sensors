@@ -27,6 +27,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import fi.side.restlet.AndroidRestlet;
 import fi.soberit.fora.D40CachedSink;
 import fi.soberit.sensors.DriverConnection;
 import fi.soberit.sensors.DriverStatusListener;
@@ -321,7 +322,8 @@ public class ForaBrowser
 			Log.d(TAG, String.format("Received observations from " + connection.getDriverAction()));
 
 			final SaveObservationsTask saveObservationsTask = new SaveObservationsTask(this);
-			saveObservationsTask.execute(observations);
+			saveObservationsTask.execute(observations);			
+			AndroidRestlet.sensor.updateSensor(observations.toString());
 			break;
 			
 		}		

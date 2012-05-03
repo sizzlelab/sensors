@@ -4,12 +4,16 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.sql.Timestamp;
-import java.text.Normalizer.Form;
 import java.util.Enumeration;
 
 import org.restlet.resource.ClientResource;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import fi.side.R;
@@ -33,7 +37,10 @@ public class AndroidRestlet {
 		 context = ctx;
 	}
 
-
+		  /**
+		   * Getting phone's imei. Used as a unique identifier for a phone
+		   * @return
+		   */
 	   private static String getPhoneUID() {
 		   	TelephonyManager telephonyManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
 			String uid = telephonyManager.getDeviceId();
@@ -52,6 +59,38 @@ public class AndroidRestlet {
 	    	
 	   }
 	   
+	   private BroadcastReceiver mConnReceiver = new BroadcastReceiver() {
+		   
+		   /**
+		    * Runs when phone's IP address has been changed
+		    */
+		   public void onReceive(Context context, Intent intent) {
+			  //no network available
+			   boolean connectivity = !intent.getBooleanExtra(ConnectivityManager. EXTRA_NO_CONNECTIVITY, false);
+			   String reason = intent.getStringExtra(ConnectivityManager.EXTRA_REASON);
+		       boolean isFailover = intent.getBooleanExtra(ConnectivityManager.EXTRA_IS_FAILOVER, false);
+		       NetworkInfo currentNetworkInfo = (NetworkInfo) intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
+		       NetworkInfo otherNetworkInfo = (NetworkInfo) intent.getParcelableExtra(ConnectivityManager.EXTRA_OTHER_NETWORK_INFO);
+		       if (connectivity) 
+		    	   try {
+		    		   AndroidRestlet.sendIp();
+				} catch (Exception e) {
+					Log.w(tag, e.toString());
+				}
+		    	 
+		   }  
+		   };
+	
+	
+	 private void registerReceivers() {    
+	       context.registerReceiver(mConnReceiver, 
+	           new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+	   }
+	 
+	 
+	 
+	 
+	 
 
 	   public static void init(Context ctx){
 		context = ctx;
